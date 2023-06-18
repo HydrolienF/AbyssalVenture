@@ -6,17 +6,18 @@ public class Fish extends Creature {
     protected int fishLevel;
     public Fish(String textureName) {
         super(textureName);
-        speed = 1f;
+        speed = 100f;
         setZoom(0.3f);
     }
     public Fish(int level) { this("fish" + level); }
 
+    public int getGivenScore() { return Math.max(1, (int) Math.pow(fishLevel, 3)); }
 
     // Move fish
     public void move() {
-        float tempX = this.speed * (float) Math.cos(Math.toRadians(getRotation()));
-        setScaleY(tempX > 0 ? Math.abs(getScaleY()) : -Math.abs(getScaleY()));
-        translate(tempX, this.speed * (float) Math.sin(Math.toRadians(getRotation())));
+        float tempX = this.speed * Gdx.graphics.getDeltaTime() * (float) Math.cos(Math.toRadians(getRotation()));
+        setScaleY(tempX > 0 ? Math.abs(getScaleY()) : -Math.abs(getScaleY())); // change draw direction
+        translate(tempX, this.speed * Gdx.graphics.getDeltaTime() * (float) Math.sin(Math.toRadians(getRotation())));
 
         // Add random angle to make move natural
         minorRandomRotation(0.02, 10);
