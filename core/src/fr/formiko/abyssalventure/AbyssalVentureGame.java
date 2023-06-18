@@ -35,8 +35,6 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	private Viewport viewport;
 	private InputMultiplexer inputMultiplexer;
 
-	private Player player = new Player();
-
 	private long startTime;
 	private long lastSpawnTime;
 	private long spawnFrequency = 1000;
@@ -129,26 +127,26 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 			@Override
 			public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }
 			@Override
-			public boolean mouseMoved(int screenX, int screenY) { 
+			public boolean mouseMoved(int screenX, int screenY) {
 				// Point A
 				int playerX = (int) player.getCreature().getCenterX();
 				int playerY = (int) player.getCreature().getCenterY();
-				// Point B 
+				// Point B
 				int Bx = screenX;
 				int By = screenY;
 				// Point C
 				int Cx = Bx;
 				int Cy = playerY;
-				
+
 				// Distances
 				double AB = Math.sqrt((playerX - Bx) * (playerX - Bx) + (playerY - By) * (playerY - By));
 				double AC = Math.sqrt((playerX - Cx) * (playerX - Cx) + (playerY - Cy) * (playerY - Cy));
-				
+
 				// Calcul de l'angle entre la souris et le joueur
-				int angle = (int) Math.acos(AC/AB);
-				
+				int angle = (int) Math.acos(AC / AB);
+
 				player.getCreature().setRotation(angle);
-				return false; 
+				return false;
 			}
 			@Override
 			public boolean scrolled(float amountX, float amountY) { return false; }
