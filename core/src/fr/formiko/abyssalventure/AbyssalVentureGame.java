@@ -156,7 +156,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		do {
 			fish.setRandomLoaction(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			k++;
-		} while (fish.isInRadius(player.getCreature(), (player.getCreature().getHitRadius() + fish.getHitRadius()) * 2) && k < 100);
+		} while (fish.isInRadius(player.getCreature(), (player.getCreature().getHitRadius() + fish.getHitRadius()) + 100) && k < 100);
 		if (k >= 100)
 			Gdx.app.log("spawnFish", "k >= 100");
 		fish.setRandomRotation();
