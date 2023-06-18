@@ -148,7 +148,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 
 				// Gdx.app.log("angle", "" + angle);
 				// player.getCreature().setRotation(angle);
-				player.getCreature().goTo(getVectorStageCoordinates(Gdx.input.getX(), Gdx.input.getY()));
+				player.getCreature().goTo(getVectorStageCoordinates(screenX, screenY));
 				return false;
 			}
 			@Override
