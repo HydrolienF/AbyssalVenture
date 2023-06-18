@@ -19,6 +19,9 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	private Camera camera;
 	private Viewport viewport;
 	private InputMultiplexer inputMultiplexer;
+	private long startTime;
+	private long lastSpawnTime;
+	private long spawnFrequency = 1000;
 
 	@Override
 	public void create() {
@@ -38,12 +41,18 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		startNewGame();
 	}
 
+	public int getTimer() { return (int) ((System.currentTimeMillis() - startTime) / 1000); }
+
 	@Override
 	public void render() {
 		ScreenUtils.clear(0, 0, 1, 1);
+		// act
+		spawnFishIfTime();
 		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
 		hudStage.act(Gdx.graphics.getDeltaTime());
+
+		// draw
+		stage.draw();
 		hudStage.draw();
 	}
 
@@ -84,7 +93,22 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	}
 
 	private void startNewGame() {
+		startTime = System.currentTimeMillis();
 		// Add actors to stage
-		stage.addActor(new Fish());
+		stage.addActor(new PlayerFish());
+	}
+
+	private void spawnFish() {
+		// todo spawn fish randomly with higher probability for low level fish when time is low
+		Fish fish = new Fish(1);
+		fish.setRandomLoaction(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		fish.setRandomRotation();
+		stage.addActor(fish);
+	}
+	private void spawnFishIfTime() {
+		if (System.currentTimeMillis() - lastSpawnTime > spawnFrequency) {
+			spawnFish();
+			lastSpawnTime = System.currentTimeMillis();
+		}
 	}
 }
