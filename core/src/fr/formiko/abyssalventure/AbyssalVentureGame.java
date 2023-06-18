@@ -46,6 +46,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	private Skin skin;
 	private static final String DEFAULT_STYLE = "default";
 	public static final int FONT_SIZE = 28;
+	private static int newFishDelay = 10; // change this to change the delay between each new fish spawn (smaller is harder)
 
 	@Override
 	public void create() {
@@ -94,8 +95,8 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		hudStage.act(Gdx.graphics.getDeltaTime());
 
 		// draw
-		stage.draw();
 		hudStage.draw();
+		stage.draw();
 	}
 
 	@Override
@@ -129,25 +130,6 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 			public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }
 			@Override
 			public boolean mouseMoved(int screenX, int screenY) {
-				// // Point A
-				// int playerX = (int) player.getCreature().getCenterX();
-				// int playerY = (int) player.getCreature().getCenterY();
-				// // Point B
-				// int Bx = Gdx.input.getX();
-				// int By = Gdx.input.getY();
-				// // Point C
-				// int Cx = Bx;
-				// int Cy = playerY;
-
-				// // Distances
-				// double AB = Math.sqrt((playerX - Bx) * (playerX - Bx) + (playerY - By) * (playerY - By));
-				// double AC = Math.sqrt((playerX - Cx) * (playerX - Cx) + (playerY - Cy) * (playerY - Cy));
-
-				// // Calcul de l'angle entre la souris et le joueur
-				// int angle = (int) (Math.acos(AC / AB) * 180 / Math.PI);
-
-				// Gdx.app.log("angle", "" + angle);
-				// player.getCreature().setRotation(angle);
 				player.getCreature().goTo(getVectorStageCoordinates(screenX, screenY));
 				return false;
 			}
@@ -167,7 +149,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 
 	private void spawnFish() {
 		// TODO spawn fish randomly with higher probability for low level fish when time is low
-		int level = Math.min((int) (getTimer() / 20) + 1, 6);
+		int level = Math.min((int) (getTimer() / newFishDelay) + 1, 6);
 		Fish fish = new Fish((int) (Math.random() * level) + 1);
 		// Fish fish = new Fish(1);
 		int k = 0;
