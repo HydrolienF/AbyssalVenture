@@ -10,6 +10,6 @@ public class Fish extends Creature {
     	this.y += this.speed * Math.sin(Math.toRadians(this.angle));
     	
     	// Add random angle to make move natural
-    	this.angle += (int)(Math.random()*361);
+    	this.angle += (int)(Math.random()*10);
     }
 }
