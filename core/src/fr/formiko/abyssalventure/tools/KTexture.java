@@ -22,7 +22,7 @@ public class KTexture extends Texture {
      */
     public KTexture(FileHandle file) {
         super(file, true);
-        setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.MipMapLinearLinear);
+        setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
     }
     /**
      * {@summary Create good quality texture with mipmap.}
@@ -31,6 +31,6 @@ public class KTexture extends Texture {
      */
     public KTexture(Pixmap pixmap) {
         super(pixmap, true);
-        setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.MipMapLinearLinear);
+        setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
     }
 }
