@@ -19,6 +19,8 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	private Camera camera;
 	private Viewport viewport;
 	private InputMultiplexer inputMultiplexer;
+	
+	private Player player = new Player();
 
 	@Override
 	public void create() {
@@ -77,7 +79,27 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 			@Override
 			public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }
 			@Override
-			public boolean mouseMoved(int screenX, int screenY) { return false; }
+			public boolean mouseMoved(int screenX, int screenY) { 
+				// Point A
+				int playerX = (int) player.getCreature().getCenterX();
+				int playerY = (int) player.getCreature().getCenterY();
+				// Point B 
+				int Bx = screenX;
+				int By = screenY;
+				// Point C
+				int Cx = Bx;
+				int Cy = playerY;
+				
+				// Distances
+				double AB = Math.sqrt((playerX - Bx) * (playerX - Bx) + (playerY - By) * (playerY - By));
+				double AC = Math.sqrt((playerX - Cx) * (playerX - Cx) + (playerY - Cy) * (playerY - Cy));
+				
+				// Calcul de l'angle entre la souris et le joueur
+				int angle = (int) Math.acos(AC/AB);
+				
+				player.getCreature().setRotation(angle);
+				return false; 
+			}
 			@Override
 			public boolean scrolled(float amountX, float amountY) { return false; }
 		};

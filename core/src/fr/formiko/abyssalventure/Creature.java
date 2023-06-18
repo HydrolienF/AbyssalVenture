@@ -71,6 +71,8 @@ public class Creature extends Actor {
         setY(getY() + y);
     }
 
+ 
+    
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
