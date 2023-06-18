@@ -18,7 +18,7 @@ public class Creature extends Actor {
     private static Map<String, TextureRegion> textureRegionMap = new HashMap<>();
     protected String textureName;
 
-    protected int speed;
+    protected float speed;
 
     public Creature(String textureName) {
         this.textureName = textureName;
@@ -37,7 +37,7 @@ public class Creature extends Actor {
     }
 
     // get set -----------------------------------------------------------------
-    public int getSpeed() { return speed; }
+    public float getSpeed() { return speed; }
     /**
      * {@summary Set center loaction to a random loaction}
      * 
