@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -128,24 +129,26 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 			public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }
 			@Override
 			public boolean mouseMoved(int screenX, int screenY) {
-				// Point A
-				int playerX = (int) player.getCreature().getCenterX();
-				int playerY = (int) player.getCreature().getCenterY();
-				// Point B
-				int Bx = screenX;
-				int By = screenY;
-				// Point C
-				int Cx = Bx;
-				int Cy = playerY;
+				// // Point A
+				// int playerX = (int) player.getCreature().getCenterX();
+				// int playerY = (int) player.getCreature().getCenterY();
+				// // Point B
+				// int Bx = Gdx.input.getX();
+				// int By = Gdx.input.getY();
+				// // Point C
+				// int Cx = Bx;
+				// int Cy = playerY;
 
-				// Distances
-				double AB = Math.sqrt((playerX - Bx) * (playerX - Bx) + (playerY - By) * (playerY - By));
-				double AC = Math.sqrt((playerX - Cx) * (playerX - Cx) + (playerY - Cy) * (playerY - Cy));
+				// // Distances
+				// double AB = Math.sqrt((playerX - Bx) * (playerX - Bx) + (playerY - By) * (playerY - By));
+				// double AC = Math.sqrt((playerX - Cx) * (playerX - Cx) + (playerY - Cy) * (playerY - Cy));
 
-				// Calcul de l'angle entre la souris et le joueur
-				int angle = (int) Math.acos(AC / AB);
+				// // Calcul de l'angle entre la souris et le joueur
+				// int angle = (int) (Math.acos(AC / AB) * 180 / Math.PI);
 
-				player.getCreature().setRotation(angle);
+				// Gdx.app.log("angle", "" + angle);
+				// player.getCreature().setRotation(angle);
+				player.getCreature().goTo(getVectorStageCoordinates(Gdx.input.getX(), Gdx.input.getY()));
 				return false;
 			}
 			@Override
@@ -247,4 +250,6 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	 * @return a white background
 	 */
 	public static Drawable getWhiteBackground() { return getWhiteBackground(0.3f); }
+
+	public Vector2 getVectorStageCoordinates(float x, float y) { return stage.screenToStageCoordinates(new Vector2(x, y)); }
 }

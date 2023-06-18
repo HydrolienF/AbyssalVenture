@@ -119,6 +119,24 @@ public class Creature extends Actor {
     }
     public int getGivenScore() { return 0; }
 
+    /**
+     * {@summary Set wanted rotation to go to v.}
+     * 
+     * @param v      contains coordinate of Point to got to
+     * @param degdif Degre difference to go to
+     */
+    public void goTo(Vector2 v) {
+        Vector2 v2 = new Vector2(v.x - getCenterX(), v.y - getCenterY());
+        float newRotation = v2.angleDeg();
+        goTo(newRotation);
+    }
+    /**
+     * {@summary Set wanted rotation to reach newRotation.}
+     * 
+     * @param newRotation rotation to reach
+     */
+    public void goTo(float newRotation) { setRotation(newRotation); }
+
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
