@@ -16,6 +16,11 @@ import com.badlogic.gdx.utils.Align;
 public class Creature extends Actor {
     private static Map<String, TextureRegion> textureRegionMap = new HashMap<>();
     private String textureName;
+    
+    protected int x;
+    protected int y;
+    protected int speed;
+    protected int angle;
 
     public Creature(String textureName) {
         this.textureName = textureName;
@@ -39,6 +44,10 @@ public class Creature extends Actor {
                 getRotation());
         // drawLifePoint(batch);
     }
+    
+    
+
+    
 
     // private -----------------------------------------------------------------
     private TextureRegion getTextureRegion() { return textureRegionMap.get(textureName); }
