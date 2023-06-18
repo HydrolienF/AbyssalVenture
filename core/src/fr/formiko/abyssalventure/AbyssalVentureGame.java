@@ -85,5 +85,6 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 
 	private void startNewGame() {
 		// Add actors to stage
+		stage.addActor(new Fish());
 	}
 }
