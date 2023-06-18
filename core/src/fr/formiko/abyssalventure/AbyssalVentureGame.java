@@ -36,9 +36,9 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	private Viewport viewport;
 	private InputMultiplexer inputMultiplexer;
 
-	private long startTime;
-	private long lastSpawnTime;
-	private long spawnFrequency = 1000;
+	private static long startTime;
+	private static long lastSpawnTime;
+	private static long spawnFrequency = 1000;
 	public static List<Creature> creatureList = new ArrayList<>();
 	public static Player player;
 	private Label scoreLabel;
@@ -78,7 +78,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		startNewGame();
 	}
 
-	public int getTimer() { return (int) ((System.currentTimeMillis() - startTime) / 1000); }
+	public static int getTimer() { return (int) ((System.currentTimeMillis() - startTime) / 1000); }
 	public static float getRacioWidth() { return Gdx.graphics != null ? Gdx.graphics.getWidth() / 1920f : 1f; }
 	public static float getRacioHeight() { return Gdx.graphics != null ? Gdx.graphics.getHeight() / 1080f : 1f; }
 	public static float getRacio() { return java.lang.Math.min(getRacioWidth(), getRacioHeight()); }
@@ -167,8 +167,16 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 
 	private void spawnFish() {
 		// TODO spawn fish randomly with higher probability for low level fish when time is low
-		Fish fish = new Fish(1);
-		fish.setRandomLoaction(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		int level = Math.min((int) (getTimer() / 20) + 1, 6);
+		Fish fish = new Fish((int) (Math.random() * level) + 1);
+		// Fish fish = new Fish(1);
+		int k = 0;
+		do {
+			fish.setRandomLoaction(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			k++;
+		} while (fish.isInRadius(player.getCreature(), (player.getCreature().getHitRadius() + fish.getHitRadius()) * 2) && k < 100);
+		if (k >= 100)
+			Gdx.app.log("spawnFish", "k >= 100");
 		fish.setRandomRotation();
 		stage.addActor(fish);
 		creatureList.add(fish);

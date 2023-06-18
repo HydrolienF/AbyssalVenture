@@ -23,7 +23,10 @@ public class Creature extends Actor {
     protected String textureName;
     protected float speed;
     /** Hit radius is used as a hitBox for interaction */
-    protected int hitRadius;
+    protected int defaultHitRadius;
+    protected float size;
+    protected float defaultZoom;
+
 
     public Creature(String textureName) {
         this.textureName = textureName;
@@ -39,7 +42,8 @@ public class Creature extends Actor {
             setSize(getTextureRegion().getRegionWidth(), getTextureRegion().getRegionHeight());
             setOrigin(Align.center);
         }
-        hitRadius = 30;
+        defaultHitRadius = 30;
+        size = 1;
     }
 
     // get set -----------------------------------------------------------------
@@ -79,15 +83,21 @@ public class Creature extends Actor {
     }
     public void setZoom(float zoom) { setScale(zoom, zoom); }
     public float getZoom() { return getScaleX(); }
-    public int getHitRadius() { return hitRadius; }
-    public void setHitRadius(int hitRadius) { this.hitRadius = hitRadius; }
+    public float getHitRadius() { return defaultHitRadius * size; }
+    public float getSize() { return size; }
+
+    public void sizeUp(float sizeUped) {
+        size += sizeUped;
+        setZoom(defaultZoom * size);
+    }
+    public boolean canEat(Creature it) { return getSize() > it.getSize() * 1.5f; }
 
     public boolean isAI() { return true; }
 
     /**
      * Return true if hit box of the 2 MapItems are connected.
      */
-    public boolean hitBoxConnected(Creature it) { return isInRadius(it, hitRadius + it.hitRadius); }
+    public boolean hitBoxConnected(Creature it) { return isInRadius(it, getHitRadius() + it.getHitRadius()); }
 
     /**
      * Return true if other MapItem is in radius.
@@ -159,7 +169,13 @@ public class Creature extends Actor {
         shapeRenderer.begin(ShapeType.Line);
         // shapeRenderer.setColor(new Color(0f, 0f, 1f, parentAlpha * 1f));
         // shapeRenderer.circle(getCenterX(), getCenterY(), c.getVisionRadius());
-        shapeRenderer.setColor(new Color(1f, 0f, 0f, parentAlpha * 1f));
+        if (AbyssalVentureGame.player.getCreature().canEat(this)) {
+            shapeRenderer.setColor(Color.GREEN);
+        } else if (canEat(AbyssalVentureGame.player.getCreature())) {
+            shapeRenderer.setColor(Color.RED);
+        } else {
+            shapeRenderer.setColor(Color.GRAY);
+        }
         shapeRenderer.circle(getCenterX(), getCenterY(), getHitRadius());
         shapeRenderer.end();
         // }
@@ -169,6 +185,9 @@ public class Creature extends Actor {
 
     @Override
     public boolean remove() {
+        if (!isAI()) {
+            // TODO end game
+        }
         AbyssalVentureGame.creatureList.remove(this);
         return super.remove();
     }

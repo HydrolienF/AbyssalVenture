@@ -1,17 +1,26 @@
 package fr.formiko.abyssalventure;
 
+import java.util.HashSet;
+import java.util.Set;
 import com.badlogic.gdx.Gdx;
 
 public class Fish extends Creature {
     protected int fishLevel;
-    public Fish(String textureName) {
-        super(textureName);
-        speed = 100f;
-        setZoom(0.1f);
-    }
-    public Fish(int level) { this("fish" + level); }
 
-    public int getGivenScore() { return Math.max(1, (int) Math.pow(fishLevel, 3)); }
+
+    public Fish(String textureName, int level) {
+        super(textureName);
+        this.fishLevel = level;
+        speed = 100f;
+        defaultZoom = 0.1f;
+        if (level != -1) {
+            size = level + AbyssalVentureGame.getTimer() / 60f;
+        }
+        sizeUp(0);
+    }
+    public Fish(int level) { this("fish" + level, level); }
+
+    public int getGivenScore() { return Math.max(1, (int) Math.pow(fishLevel, 2)); }
 
     // Move fish
     public void move() {
@@ -35,5 +44,19 @@ public class Fish extends Creature {
     public void act(float delta) {
         super.act(delta);
         move();
+        Set<Creature> toRemove = new HashSet<>();
+        for (Creature c : AbyssalVentureGame.creatureList) {
+            if (c != this && hitBoxConnected(c) && canEat(c)) {
+                Gdx.app.log("PlayerFish", "PlayerFish hit " + c);
+                toRemove.add(c);
+            }
+        }
+        for (Creature c : toRemove) {
+            if (!isAI()) {
+                AbyssalVentureGame.player.setScore(AbyssalVentureGame.player.getScore() + c.getGivenScore());
+            }
+            sizeUp(c.getGivenScore() / 10f);
+            c.remove();
+        }
     }
 }
