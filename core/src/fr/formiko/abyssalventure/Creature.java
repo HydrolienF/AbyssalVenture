@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
 
@@ -15,12 +16,9 @@ import com.badlogic.gdx.utils.Align;
  */
 public class Creature extends Actor {
     private static Map<String, TextureRegion> textureRegionMap = new HashMap<>();
-    private String textureName;
-    
-    protected int x;
-    protected int y;
+    protected String textureName;
+
     protected int speed;
-    protected int angle;
 
     public Creature(String textureName) {
         this.textureName = textureName;
@@ -38,16 +36,49 @@ public class Creature extends Actor {
         }
     }
 
+    // get set -----------------------------------------------------------------
+    public int getSpeed() { return speed; }
+    /**
+     * {@summary Set center loaction to a random loaction}
+     * 
+     * @param maxX max value of x
+     * @param maxY max value of y
+     */
+    public void setRandomLoaction(float maxX, float maxY) {
+        setCenterX((float) Math.random() * maxX);
+        setCenterY((float) Math.random() * maxY);
+    }
+    public float getCenterX() { return getX() + getWidth() / 2; }
+    public float getCenterY() { return getY() + getHeight() / 2; }
+    public Vector2 getCenter() { return new Vector2(getCenterX(), getCenterY()); }
+    public void setCenterX(float x) { setX(x - getWidth() / 2); }
+    public void setCenterY(float y) { setY(y - getHeight() / 2); }
+    /**
+     * {@summary Set center location.}
+     */
+    public void setCenter(float x, float y) {
+        setCenterX(x);
+        setCenterY(y);
+    }
+    /**
+     * {@summary Move in x &#38; y}
+     * 
+     * @param x x
+     * @param y y
+     */
+    public void translate(float x, float y) {
+        setX(getX() + x);
+        setY(getY() + y);
+    }
+
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(getTextureRegion(), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
                 getRotation());
         // drawLifePoint(batch);
     }
-    
-    
 
-    
 
     // private -----------------------------------------------------------------
     private TextureRegion getTextureRegion() { return textureRegionMap.get(textureName); }
