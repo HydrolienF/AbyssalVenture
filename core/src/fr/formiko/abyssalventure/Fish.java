@@ -20,7 +20,9 @@ public class Fish extends Creature {
     }
     public Fish(int level) { this("fish" + level, level); }
 
-    public int getGivenScore() { return Math.max(1, (int) Math.pow(fishLevel, 2)); }
+    // public int getGivenScore() { return Math.max(1, (int) Math.pow(fishLevel, 2)); }
+    public int getGivenScore() { return Math.max(1, fishLevel); }
+
 
     // Move fish
     public void move() {
