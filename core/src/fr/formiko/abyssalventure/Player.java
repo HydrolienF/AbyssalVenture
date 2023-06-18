@@ -13,4 +13,6 @@ public class Player {
     public void setCreature(Creature creature) { this.creature = creature; }
     public int getScore() { return score; }
     public void setScore(int score) { this.score = score; }
+    
+    
 }
