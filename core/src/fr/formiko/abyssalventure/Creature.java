@@ -48,6 +48,7 @@ public class Creature extends Actor {
         setCenterX((float) Math.random() * maxX);
         setCenterY((float) Math.random() * maxY);
     }
+    public void setRandomRotation() { setRotation((float) (Math.random() * 360)); }
     public float getCenterX() { return getX() + getWidth() / 2; }
     public float getCenterY() { return getY() + getHeight() / 2; }
     public Vector2 getCenter() { return new Vector2(getCenterX(), getCenterY()); }
@@ -70,6 +71,10 @@ public class Creature extends Actor {
         setX(getX() + x);
         setY(getY() + y);
     }
+    public void setZoom(float zoom) { setScale(zoom, zoom); }
+    public float getZoom() { return getScaleX(); }
+
+    public boolean isAI() { return true; }
 
  
     

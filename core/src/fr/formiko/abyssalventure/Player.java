@@ -5,7 +5,7 @@ public class Player {
     private int score;
 
     public Player() {
-        creature = new Fish();
+        creature = new PlayerFish();
         score = 0;
     }
 
