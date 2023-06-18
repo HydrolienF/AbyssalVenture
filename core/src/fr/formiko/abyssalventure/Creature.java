@@ -39,7 +39,7 @@ public class Creature extends Actor {
             setSize(getTextureRegion().getRegionWidth(), getTextureRegion().getRegionHeight());
             setOrigin(Align.center);
         }
-        hitRadius = 100;
+        hitRadius = 30;
     }
 
     // get set -----------------------------------------------------------------

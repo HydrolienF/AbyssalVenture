@@ -7,7 +7,7 @@ public class Fish extends Creature {
     public Fish(String textureName) {
         super(textureName);
         speed = 100f;
-        setZoom(0.3f);
+        setZoom(0.1f);
     }
     public Fish(int level) { this("fish" + level); }
 
@@ -20,7 +20,8 @@ public class Fish extends Creature {
         translate(tempX, this.speed * Gdx.graphics.getDeltaTime() * (float) Math.sin(Math.toRadians(getRotation())));
 
         // Add random angle to make move natural
-        minorRandomRotation(0.02, 10);
+        if (isAI())
+            minorRandomRotation(0.02, 10);
     }
 
     public void minorRandomRotation(double frequency, float maxRotation) {

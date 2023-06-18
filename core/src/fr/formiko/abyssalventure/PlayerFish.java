@@ -7,8 +7,8 @@ import com.badlogic.gdx.Gdx;
 public class PlayerFish extends Fish {
     public PlayerFish() {
         super("playerFish");
-        setZoom(0.2f);
-        hitRadius = 150;
+        setZoom(0.07f);
+        hitRadius = 50;
         speed = 200f;
     }
     @Override
