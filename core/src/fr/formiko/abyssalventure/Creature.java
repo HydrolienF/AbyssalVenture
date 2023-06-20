@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
+import fr.formiko.abyssalventure.tools.SoundBank;
 
 /**
  * {@summary A creature is an actor that can move and interact with other Creature.}<br>
@@ -185,6 +186,8 @@ public class Creature extends Actor {
 
     @Override
     public boolean remove() {
+        SoundBank.eat.play(1.0f);
+        System.out.println("PLAYED SOUND!!!!!!!!!!!!!!1");
         if (!isAI()) {
             // TODO end game
         }
