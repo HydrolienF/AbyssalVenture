@@ -187,9 +187,9 @@ public class Creature extends Actor {
     @Override
     public boolean remove() {
         SoundBank.eat.play(1.0f);
-        System.out.println("PLAYED SOUND!!!!!!!!!!!!!!1");
         if (!isAI()) {
             // TODO end game
+            new AbyssalVentureGame();
         }
         AbyssalVentureGame.creatureList.remove(this);
         return super.remove();
