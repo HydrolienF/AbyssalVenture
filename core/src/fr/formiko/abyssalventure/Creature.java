@@ -1,6 +1,7 @@
 package fr.formiko.abyssalventure;
 
 import fr.formiko.abyssalventure.tools.KTexture;
+import fr.formiko.abyssalventure.tools.SoundBank;
 import java.util.HashMap;
 import java.util.Map;
 import com.badlogic.gdx.Gdx;
@@ -14,7 +15,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
-import fr.formiko.abyssalventure.tools.SoundBank;
 
 /**
  * {@summary A creature is an actor that can move and interact with other Creature.}<br>

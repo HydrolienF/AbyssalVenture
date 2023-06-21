@@ -49,7 +49,7 @@ public class Fish extends Creature {
         Set<Creature> toRemove = new HashSet<>();
         for (Creature c : AbyssalVentureGame.creatureList) {
             if (c != this && hitBoxConnected(c) && canEat(c)) {
-                Gdx.app.log("PlayerFish", "PlayerFish hit " + c);
+                Gdx.app.log("PlayerFish", this + " hit " + c);
                 toRemove.add(c);
             }
         }
