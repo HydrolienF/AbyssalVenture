@@ -33,6 +33,13 @@ public class Fish extends Creature {
         // Add random angle to make move natural
         if (isAI())
             minorRandomRotation(0.02, 10);
+        if (isOutOfTheScreen()) {
+            remove();
+        }
+    }
+
+    public boolean isOutOfTheScreen() {
+        return getX() < -getWidth() || getX() > Gdx.graphics.getWidth() || getY() < -getHeight() || getY() > Gdx.graphics.getHeight();
     }
 
     public void minorRandomRotation(double frequency, float maxRotation) {
