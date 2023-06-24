@@ -32,6 +32,8 @@ import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.utils.Align;
 
 public class AbyssalVentureGame extends ApplicationAdapter {
 	private SpriteBatch batch;
@@ -53,13 +55,19 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	private Label timerLabel;
 	private Label help;
 	private Skin skin;
+	private Label restartLabel;
 	public static boolean debugMode = false;
 	private static final String DEFAULT_STYLE = "default";
 	public static final int FONT_SIZE = 28;
 	private static int newFishDelay = 10; // change this to change the delay between each new fish spawn (smaller is harder)
 
+	
 	private static boolean needRestart = false;
+	private static boolean waitForRestart = false;
 	private static Texture background;
+	
+	
+	Table table2; 
 
 	@Override
 	public void create() {
@@ -78,6 +86,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 
 		skin = getDefautSkin();
 
+		restartLabel = new Label("Press space to restart", skin);
 		scoreLabel = new Label("", skin);
 		bestScoreLabel = new Label("", skin);
 		timerLabel = new Label("", skin);
@@ -101,8 +110,14 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		table.add(scoreLabel).expandX();
 		table.add(timerLabel).expandX();
 		table.add(help).expandX();
-
+		
 		hudStage.addActor(table);
+		
+		
+		table2 = new Table();
+		table2.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		table2.add(restartLabel).align(Align.center);
+		
 
 		startNewGame();
 
@@ -126,21 +141,36 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.end();
 		// act
-		updateTimeAndScore();
-		spawnFishIfTime();
-		stage.act(Gdx.graphics.getDeltaTime());
-		hudStage.act(Gdx.graphics.getDeltaTime());
+		if(!waitForRestart) {
+			updateTimeAndScore();
+			spawnFishIfTime();
+			stage.act(Gdx.graphics.getDeltaTime());
+			hudStage.act(Gdx.graphics.getDeltaTime());
+		}
 
+		
 		// Check if restart is needed
 		if (this.needRestart || getTimer() > maxTime) {
 			// if (player.getScore() >= bestScore) {
-			if (getTimer() > maxTime) {
-				SoundBank.win.play();
-			} else {
-				SoundBank.lose.play();
+			if(this.waitForRestart == false) {
+				if (getTimer() > maxTime) {
+					SoundBank.win.play();
+				} else {
+					SoundBank.lose.play();
+				}
+				
+				this.needRestart = false;
+				this.waitForRestart = true;
+				
+				hudStage.addActor(table2);
+				
 			}
-			this.needRestart = false;
-			// this.create();
+			//startNewGame();
+		}
+		
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && waitForRestart == true) {
+			waitForRestart = false;
+			table2.remove();
 			startNewGame();
 		}
 
