@@ -1,5 +1,6 @@
 package fr.formiko.abyssalventure;
 
+import fr.formiko.abyssalventure.tools.KTexture;
 import fr.formiko.abyssalventure.tools.SoundBank;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -57,6 +59,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	private static int newFishDelay = 10; // change this to change the delay between each new fish spawn (smaller is harder)
 
 	private static boolean needRestart = false;
+	private static Texture background;
 
 	@Override
 	public void create() {
@@ -102,6 +105,9 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		hudStage.addActor(table);
 
 		startNewGame();
+
+		background = new KTexture(
+				createPixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Color(0, 0, 0.2f, 1), new Color(0, 0, 0.8f, 1)));
 	}
 
 	public static int getTimer() { return (int) ((System.currentTimeMillis() - startTime) / 1000); }
@@ -116,7 +122,9 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	@Override
 	public void render() {
 		ScreenUtils.clear(0, 0, 1, 1);
-		// TODO radiant de couleur
+		batch.begin();
+		batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.end();
 		// act
 		updateTimeAndScore();
 		spawnFishIfTime();
@@ -288,4 +296,30 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	public static Drawable getWhiteBackground() { return getWhiteBackground(0.3f); }
 
 	public Vector2 getVectorStageCoordinates(float x, float y) { return stage.screenToStageCoordinates(new Vector2(x, y)); }
+
+
+	/**
+	 * {@summary Create a pixmap with a single color.}
+	 * 
+	 * @param width  width of pixmap
+	 * @param height height of pixmap
+	 * @param color  color of pixmap
+	 * @param color2 2a color of pixmap for gradient (optional)
+	 */
+	public static Pixmap createPixmap(int width, int height, Color color, @Null Color color2) {
+		Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+		if (color2 != null) {
+			for (int y = 0; y < height; y++) { // draw line with mixed color.
+				pixmap.setColor(new Color(color.r * ((float) y / height) + color2.r * (1 - ((float) y / height)),
+						color.g * ((float) y / height) + color2.g * (1 - ((float) y / height)),
+						color.b * ((float) y / height) + color2.b * (1 - ((float) y / height)),
+						color.a * ((float) y / height) + color2.a * (1 - ((float) y / height))));
+				pixmap.drawLine(0, y, width, y);
+			}
+		} else {
+			pixmap.setColor(color);
+			pixmap.fillRectangle(0, 0, width, height);
+		}
+		return pixmap;
+	}
 }
