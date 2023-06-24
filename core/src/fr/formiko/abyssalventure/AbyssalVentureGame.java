@@ -47,7 +47,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	private static final String DEFAULT_STYLE = "default";
 	public static final int FONT_SIZE = 28;
 	private static int newFishDelay = 10; // change this to change the delay between each new fish spawn (smaller is harder)
-	
+
 	private static boolean needRestart = false;
 
 	@Override
@@ -76,7 +76,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		table.add(scoreLabel).expandX();
 		table.add(timerLabel).expandX();
 
-		stage.addActor(table);
+		hudStage.addActor(table);
 
 		startNewGame();
 	}
@@ -86,9 +86,9 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	public static float getRacioHeight() { return Gdx.graphics != null ? Gdx.graphics.getHeight() / 1080f : 1f; }
 	public static float getRacio() { return java.lang.Math.min(getRacioWidth(), getRacioHeight()); }
 	public static float getFPSRacio() { return Gdx.graphics != null ? Gdx.graphics.getDeltaTime() * 60f : 1f; }
-	
-	public static boolean needRestart() { return needRestart;}
-	public static void setNeedRestart(boolean b) { needRestart = b;}
+
+	public static boolean needRestart() { return needRestart; }
+	public static void setNeedRestart(boolean b) { needRestart = b; }
 
 	@Override
 	public void render() {
@@ -98,11 +98,12 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		spawnFishIfTime();
 		stage.act(Gdx.graphics.getDeltaTime());
 		hudStage.act(Gdx.graphics.getDeltaTime());
-		
+
 		// Check if restart is needed
-		if(this.needRestart) {
+		if (this.needRestart) {
 			this.needRestart = false;
-			this.create();
+			// this.create();
+			startNewGame();
 		}
 
 		// draw
@@ -127,7 +128,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 			@Override
 			public boolean keyUp(int keycode) {
 				// if (keycode == Input.Keys.M) {
-				//endGame(true);
+				// endGame(true);
 				// }
 				return false;
 			}
@@ -150,6 +151,8 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	}
 
 	private void startNewGame() {
+		creatureList.clear();
+		stage.clear();
 		startTime = System.currentTimeMillis();
 		creatureList.clear();
 		// Add actors to stage
