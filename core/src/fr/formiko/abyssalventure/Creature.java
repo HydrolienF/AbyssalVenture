@@ -1,5 +1,6 @@
 package fr.formiko.abyssalventure;
 
+import fr.formiko.abyssalventure.AbyssalVentureGame;
 import fr.formiko.abyssalventure.tools.KTexture;
 import fr.formiko.abyssalventure.tools.SoundBank;
 import java.util.HashMap;
@@ -188,8 +189,8 @@ public class Creature extends Actor {
     public boolean remove() {
         SoundBank.eat.play(1.0f);
         if (!isAI()) {
-            // TODO end game
-            new AbyssalVentureGame();
+            AbyssalVentureGame.setNeedRestart(true);
+            //new AbyssalVentureGame();
         }
         AbyssalVentureGame.creatureList.remove(this);
         return super.remove();
