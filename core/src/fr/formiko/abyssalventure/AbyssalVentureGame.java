@@ -1,5 +1,6 @@
 package fr.formiko.abyssalventure;
 
+import fr.formiko.abyssalventure.tools.SoundBank;
 import java.util.ArrayList;
 import java.util.List;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -42,6 +43,9 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	public static List<Creature> creatureList = new ArrayList<>();
 	public static Player player;
 	private Label scoreLabel;
+	private Label bestScoreLabel;
+	private int bestScore;
+	private int maxTime = 100;
 	private Label timerLabel;
 	private Skin skin;
 	private static final String DEFAULT_STYLE = "default";
@@ -68,11 +72,13 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		skin = getDefautSkin();
 
 		scoreLabel = new Label("", skin);
+		bestScoreLabel = new Label("", skin);
 		timerLabel = new Label("", skin);
 
 		Table table = new Table();
 		table.top();
 		table.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		table.add(bestScoreLabel).expandX();
 		table.add(scoreLabel).expandX();
 		table.add(timerLabel).expandX();
 
@@ -100,7 +106,13 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		hudStage.act(Gdx.graphics.getDeltaTime());
 
 		// Check if restart is needed
-		if (this.needRestart) {
+		if (this.needRestart || getTimer() > maxTime) {
+			// if (player.getScore() >= bestScore) {
+			if (getTimer() > maxTime) {
+				SoundBank.win.play();
+			} else {
+				SoundBank.lose.play();
+			}
 			this.needRestart = false;
 			// this.create();
 			startNewGame();
@@ -153,6 +165,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	private void startNewGame() {
 		creatureList.clear();
 		stage.clear();
+		SoundBank.music.play();
 		startTime = System.currentTimeMillis();
 		creatureList.clear();
 		// Add actors to stage
@@ -185,7 +198,10 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	}
 	private void updateTimeAndScore() {
 		scoreLabel.setText("Score: " + player.getScore());
-		timerLabel.setText("Time: " + getTimer() + "s");
+		timerLabel.setText("Time: " + getTimer() + "s/" + maxTime + "s");
+		if (bestScore < player.getScore())
+			bestScore = player.getScore();
+		bestScoreLabel.setText("Best score: " + bestScore);
 	}
 
 
