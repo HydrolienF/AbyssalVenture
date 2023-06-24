@@ -14,7 +14,7 @@ public class Fish extends Creature {
         speed = 100f;
         defaultZoom = 0.1f;
         if (level != -1) {
-            size = level + AbyssalVentureGame.getTimer() / 60f;
+            size = level + (float) (Math.random() * (AbyssalVentureGame.getTimer() / 60f));
         }
         sizeUp(0);
     }

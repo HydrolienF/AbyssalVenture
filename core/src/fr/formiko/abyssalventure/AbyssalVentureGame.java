@@ -1,5 +1,7 @@
 package fr.formiko.abyssalventure;
 
+import fr.formiko.abyssalventure.tools.KTexture;
+import fr.formiko.abyssalventure.tools.SoundBank;
 import java.util.ArrayList;
 import java.util.List;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -15,6 +17,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -23,7 +26,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -42,11 +47,19 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	public static List<Creature> creatureList = new ArrayList<>();
 	public static Player player;
 	private Label scoreLabel;
+	private Label bestScoreLabel;
+	private int bestScore;
+	private int maxTime = 100;
 	private Label timerLabel;
+	private Label help;
 	private Skin skin;
+	public static boolean debugMode = false;
 	private static final String DEFAULT_STYLE = "default";
 	public static final int FONT_SIZE = 28;
 	private static int newFishDelay = 10; // change this to change the delay between each new fish spawn (smaller is harder)
+
+	private static boolean needRestart = false;
+	private static Texture background;
 
 	@Override
 	public void create() {
@@ -66,17 +79,35 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		skin = getDefautSkin();
 
 		scoreLabel = new Label("", skin);
+		bestScoreLabel = new Label("", skin);
 		timerLabel = new Label("", skin);
+		help = new Label("Display help", skin);
+		help.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				debugMode = !debugMode;
+				if (debugMode) {
+					help.setText("Hide help");
+				} else {
+					help.setText("Display help");
+				}
+			}
+		});
 
 		Table table = new Table();
 		table.top();
 		table.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		table.add(bestScoreLabel).expandX();
 		table.add(scoreLabel).expandX();
 		table.add(timerLabel).expandX();
+		table.add(help).expandX();
 
-		stage.addActor(table);
+		hudStage.addActor(table);
 
 		startNewGame();
+
+		background = new KTexture(
+				createPixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Color(0, 0, 0.2f, 1), new Color(0, 0, 0.8f, 1)));
 	}
 
 	public static int getTimer() { return (int) ((System.currentTimeMillis() - startTime) / 1000); }
@@ -85,14 +116,33 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	public static float getRacio() { return java.lang.Math.min(getRacioWidth(), getRacioHeight()); }
 	public static float getFPSRacio() { return Gdx.graphics != null ? Gdx.graphics.getDeltaTime() * 60f : 1f; }
 
+	public static boolean needRestart() { return needRestart; }
+	public static void setNeedRestart(boolean b) { needRestart = b; }
+
 	@Override
 	public void render() {
 		ScreenUtils.clear(0, 0, 1, 1);
+		batch.begin();
+		batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.end();
 		// act
 		updateTimeAndScore();
 		spawnFishIfTime();
 		stage.act(Gdx.graphics.getDeltaTime());
 		hudStage.act(Gdx.graphics.getDeltaTime());
+
+		// Check if restart is needed
+		if (this.needRestart || getTimer() > maxTime) {
+			// if (player.getScore() >= bestScore) {
+			if (getTimer() > maxTime) {
+				SoundBank.win.play();
+			} else {
+				SoundBank.lose.play();
+			}
+			this.needRestart = false;
+			// this.create();
+			startNewGame();
+		}
 
 		// draw
 		hudStage.draw();
@@ -116,7 +166,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 			@Override
 			public boolean keyUp(int keycode) {
 				// if (keycode == Input.Keys.M) {
-				//endGame(true);
+				// endGame(true);
 				// }
 				return false;
 			}
@@ -139,6 +189,9 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	}
 
 	private void startNewGame() {
+		creatureList.clear();
+		stage.clear();
+		SoundBank.music.play();
 		startTime = System.currentTimeMillis();
 		creatureList.clear();
 		// Add actors to stage
@@ -148,10 +201,8 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	}
 
 	private void spawnFish() {
-		// TODO spawn fish randomly with higher probability for low level fish when time is low
 		int level = Math.min((int) (getTimer() / newFishDelay) + 1, 6);
 		Fish fish = new Fish((int) (Math.random() * level) + 1);
-		// Fish fish = new Fish(1);
 		int k = 0;
 		do {
 			fish.setRandomLoaction(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -171,7 +222,10 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	}
 	private void updateTimeAndScore() {
 		scoreLabel.setText("Score: " + player.getScore());
-		timerLabel.setText("Time: " + getTimer() + "s");
+		timerLabel.setText("Time: " + getTimer() + "s/" + maxTime + "s");
+		if (bestScore < player.getScore())
+			bestScore = player.getScore();
+		bestScoreLabel.setText("Best score: " + bestScore);
 	}
 
 
@@ -242,4 +296,30 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	public static Drawable getWhiteBackground() { return getWhiteBackground(0.3f); }
 
 	public Vector2 getVectorStageCoordinates(float x, float y) { return stage.screenToStageCoordinates(new Vector2(x, y)); }
+
+
+	/**
+	 * {@summary Create a pixmap with a single color.}
+	 * 
+	 * @param width  width of pixmap
+	 * @param height height of pixmap
+	 * @param color  color of pixmap
+	 * @param color2 2a color of pixmap for gradient (optional)
+	 */
+	public static Pixmap createPixmap(int width, int height, Color color, @Null Color color2) {
+		Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+		if (color2 != null) {
+			for (int y = 0; y < height; y++) { // draw line with mixed color.
+				pixmap.setColor(new Color(color.r * ((float) y / height) + color2.r * (1 - ((float) y / height)),
+						color.g * ((float) y / height) + color2.g * (1 - ((float) y / height)),
+						color.b * ((float) y / height) + color2.b * (1 - ((float) y / height)),
+						color.a * ((float) y / height) + color2.a * (1 - ((float) y / height))));
+				pixmap.drawLine(0, y, width, y);
+			}
+		} else {
+			pixmap.setColor(color);
+			pixmap.fillRectangle(0, 0, width, height);
+		}
+		return pixmap;
+	}
 }

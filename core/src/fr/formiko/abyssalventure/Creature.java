@@ -154,7 +154,9 @@ public class Creature extends Actor {
         batch.draw(getTextureRegion(), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
                 getRotation());
         // drawLifePoint(batch);
-        drawDebugCircles(batch, parentAlpha);
+        if (AbyssalVentureGame.debugMode) {
+            drawDebugCircles(batch, parentAlpha);
+        }
     }
 
     private ShapeRenderer shapeRenderer;
@@ -188,8 +190,8 @@ public class Creature extends Actor {
     public boolean remove() {
         SoundBank.eat.play(1.0f);
         if (!isAI()) {
-            // TODO end game
-            new AbyssalVentureGame();
+            AbyssalVentureGame.setNeedRestart(true);
+            // new AbyssalVentureGame();
         }
         AbyssalVentureGame.creatureList.remove(this);
         return super.remove();
