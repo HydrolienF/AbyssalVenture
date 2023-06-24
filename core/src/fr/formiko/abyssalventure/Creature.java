@@ -1,6 +1,5 @@
 package fr.formiko.abyssalventure;
 
-import fr.formiko.abyssalventure.AbyssalVentureGame;
 import fr.formiko.abyssalventure.tools.KTexture;
 import fr.formiko.abyssalventure.tools.SoundBank;
 import java.util.HashMap;
@@ -155,7 +154,9 @@ public class Creature extends Actor {
         batch.draw(getTextureRegion(), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
                 getRotation());
         // drawLifePoint(batch);
-        drawDebugCircles(batch, parentAlpha);
+        if (AbyssalVentureGame.debugMode) {
+            drawDebugCircles(batch, parentAlpha);
+        }
     }
 
     private ShapeRenderer shapeRenderer;
@@ -190,7 +191,7 @@ public class Creature extends Actor {
         SoundBank.eat.play(1.0f);
         if (!isAI()) {
             AbyssalVentureGame.setNeedRestart(true);
-            //new AbyssalVentureGame();
+            // new AbyssalVentureGame();
         }
         AbyssalVentureGame.creatureList.remove(this);
         return super.remove();

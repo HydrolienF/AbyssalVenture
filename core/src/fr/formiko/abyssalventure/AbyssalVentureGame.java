@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -47,7 +49,9 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	private int bestScore;
 	private int maxTime = 100;
 	private Label timerLabel;
+	private Label help;
 	private Skin skin;
+	public static boolean debugMode = false;
 	private static final String DEFAULT_STYLE = "default";
 	public static final int FONT_SIZE = 28;
 	private static int newFishDelay = 10; // change this to change the delay between each new fish spawn (smaller is harder)
@@ -74,6 +78,18 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		scoreLabel = new Label("", skin);
 		bestScoreLabel = new Label("", skin);
 		timerLabel = new Label("", skin);
+		help = new Label("Display help", skin);
+		help.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				debugMode = !debugMode;
+				if (debugMode) {
+					help.setText("Hide help");
+				} else {
+					help.setText("Display help");
+				}
+			}
+		});
 
 		Table table = new Table();
 		table.top();
@@ -81,6 +97,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		table.add(bestScoreLabel).expandX();
 		table.add(scoreLabel).expandX();
 		table.add(timerLabel).expandX();
+		table.add(help).expandX();
 
 		hudStage.addActor(table);
 
@@ -99,6 +116,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	@Override
 	public void render() {
 		ScreenUtils.clear(0, 0, 1, 1);
+		// TODO radiant de couleur
 		// act
 		updateTimeAndScore();
 		spawnFishIfTime();
@@ -175,10 +193,8 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	}
 
 	private void spawnFish() {
-		// TODO spawn fish randomly with higher probability for low level fish when time is low
 		int level = Math.min((int) (getTimer() / newFishDelay) + 1, 6);
 		Fish fish = new Fish((int) (Math.random() * level) + 1);
-		// Fish fish = new Fish(1);
 		int k = 0;
 		do {
 			fish.setRandomLoaction(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
