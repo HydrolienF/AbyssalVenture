@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
@@ -28,12 +29,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.utils.Align;
 
 public class AbyssalVentureGame extends ApplicationAdapter {
 	private SpriteBatch batch;
@@ -61,13 +61,13 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	public static final int FONT_SIZE = 28;
 	private static int newFishDelay = 10; // change this to change the delay between each new fish spawn (smaller is harder)
 
-	
+
 	private static boolean needRestart = false;
 	private static boolean waitForRestart = false;
 	private static Texture background;
-	
-	
-	Table table2; 
+
+
+	Table table2;
 
 	@Override
 	public void create() {
@@ -110,14 +110,14 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		table.add(scoreLabel).expandX();
 		table.add(timerLabel).expandX();
 		table.add(help).expandX();
-		
+
 		hudStage.addActor(table);
-		
-		
+
+
 		table2 = new Table();
 		table2.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		table2.add(restartLabel).align(Align.center);
-		
+
 
 		startNewGame();
 
@@ -141,33 +141,33 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 		batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.end();
 		// act
-		if(!waitForRestart) {
+		if (!waitForRestart) {
 			updateTimeAndScore();
 			spawnFishIfTime();
 			stage.act(Gdx.graphics.getDeltaTime());
 			hudStage.act(Gdx.graphics.getDeltaTime());
 		}
 
-		
+
 		// Check if restart is needed
 		if (this.needRestart || getTimer() > maxTime) {
 			// if (player.getScore() >= bestScore) {
-			if(this.waitForRestart == false) {
+			if (this.waitForRestart == false) {
 				if (getTimer() > maxTime) {
 					SoundBank.win.play();
 				} else {
 					SoundBank.lose.play();
 				}
-				
+
 				this.needRestart = false;
 				this.waitForRestart = true;
-				
+
 				hudStage.addActor(table2);
-				
+
 			}
-			//startNewGame();
+			// startNewGame();
 		}
-		
+
 		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && waitForRestart == true) {
 			waitForRestart = false;
 			table2.remove();
@@ -231,7 +231,7 @@ public class AbyssalVentureGame extends ApplicationAdapter {
 	}
 
 	private void spawnFish() {
-		int level = Math.min((int) (getTimer() / newFishDelay) + 1, 6);
+		int level = Math.min((int) (getTimer() / newFishDelay) + 1, 7);
 		Fish fish = new Fish((int) (Math.random() * level) + 1);
 		int k = 0;
 		do {
